@@ -5,7 +5,7 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 
-import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.util.glu.GLU.gluPerspective;
 
 public class Main {
@@ -55,6 +55,15 @@ public class Main {
 
 		// switch back to the model view matrix
 		glMatrixMode(GL_MODELVIEW);
+
+		initializeShaders();
+	}
+
+	private void initializeShaders() {
+		int shaderProgram = glCreateProgram();
+		int vertexShader = glCreateShader(GL_VERTEX_SHADER);
+		int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+
 	}
 
 	private void initializeVariables() {
