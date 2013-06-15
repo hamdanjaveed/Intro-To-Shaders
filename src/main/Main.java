@@ -5,6 +5,11 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+
+import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.util.glu.GLU.gluPerspective;
 
@@ -41,8 +46,7 @@ public class Main {
 			Display.create();
 		} catch(LWJGLException exception) {
 			exception.printStackTrace();
-			Display.destroy();
-			System.exit(1);
+			exitProgramWithErrorCode(1);
 		}
 	}
 
@@ -64,6 +68,24 @@ public class Main {
 		int vertexShader = glCreateShader(GL_VERTEX_SHADER);
 		int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
 
+		StringBuilder vertexShaderSource = loadShaderSourceFromPath("src/shader/shader.vertex");
+		StringBuilder fragmentShaderSource = loadShaderSourceFromPath("src/shader/shader.fragment");
+	}
+
+	private StringBuilder loadShaderSourceFromPath(String path) {
+		StringBuilder shaderSource = new StringBuilder();
+		try {
+			BufferedReader reader = new BufferedReader(new FileReader(path));
+			String line;
+			while ((line = reader.readLine()) != null) {
+				shaderSource.append(line).append("\n");
+			}
+			reader.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+			exitProgramWithErrorCode(2);
+		}
+		return shaderSource;
 	}
 
 	private void initializeVariables() {
@@ -95,6 +117,13 @@ public class Main {
 		destroyBuffers();
 		Display.destroy();
 		System.exit(0);
+	}
+
+	private void exitProgramWithErrorCode(int error) {
+		System.err.println("Terminated with error code " + error);
+		destroyBuffers();
+		Display.destroy();
+		System.exit(error);
 	}
 
 	private void destroyBuffers() {
